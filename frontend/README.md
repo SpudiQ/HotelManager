@@ -1,46 +1,75 @@
-Generated with [vike.dev/new](https://vike.dev/new) ([version 599](https://www.npmjs.com/package/create-vike/v/0.0.599)) using this command:
+# Nuxt Minimal Starter
 
-```sh
-npm create vike@latest --- --vue
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+
+## Setup
+
+Make sure to install dependencies:
+
+```bash
+# npm
+npm install
+
+# pnpm
+pnpm install
+
+# yarn
+yarn install
+
+# bun
+bun install
 ```
 
-## Contents
+## Development Server
 
-- [Vike](#vike)
-  - [Plus files](#plus-files)
-  - [Routing](#routing)
-  - [SSR](#ssr)
-  - [HTML Streaming](#html-streaming)
+Start the development server on `http://localhost:3000`:
 
-## Vike
+```bash
+# npm
+npm run dev
 
-This app is ready to start. It's powered by [Vike](https://vike.dev) and [Vue](https://vuejs.org/guide/quick-start.html).
+# pnpm
+pnpm dev
 
-### Plus files
+# yarn
+yarn dev
 
-[The + files are the interface](https://vike.dev/config) between Vike and your code.
+# bun
+bun run dev
+```
 
-- [`+config.ts`](https://vike.dev/settings) — Settings (e.g. `<title>`)
-- [`+Page.vue`](https://vike.dev/Page) — The `<Page>` component
-- [`+data.ts`](https://vike.dev/data) — Fetching data (for your `<Page>` component)
-- [`+Layout.vue`](https://vike.dev/Layout) — The `<Layout>` component (wraps your `<Page>` components)
-- [`+Head.vue`](https://vike.dev/Head) - Sets `<head>` tags
-- [`/pages/_error/+Page.vue`](https://vike.dev/error-page) — The error page (rendered when an error occurs)
-- [`+onPageTransitionStart.ts`](https://vike.dev/onPageTransitionStart) and `+onPageTransitionEnd.ts` — For page transition animations
+## Production
 
-### Routing
+Build the application for production:
 
-[Vike's built-in router](https://vike.dev/routing) lets you choose between:
+```bash
+# npm
+npm run build
 
-- [Filesystem Routing](https://vike.dev/filesystem-routing) (the URL of a page is determined based on where its `+Page.vue` file is located on the filesystem)
-- [Route Strings](https://vike.dev/route-string)
-- [Route Functions](https://vike.dev/route-function)
+# pnpm
+pnpm build
 
-### SSR
+# yarn
+yarn build
 
-SSR is enabled by default. You can [disable it](https://vike.dev/ssr) for all or specific pages.
+# bun
+bun run build
+```
 
-### HTML Streaming
+Locally preview production build:
 
-You can [enable/disable HTML streaming](https://vike.dev/stream) for all or specific pages.
+```bash
+# npm
+npm run preview
 
+# pnpm
+pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
+```
+
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.

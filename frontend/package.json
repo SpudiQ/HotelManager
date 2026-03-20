@@ -1,18 +1,18 @@
 {
+  "name": "frontend",
+  "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "vike dev",
-    "build": "vike build",
-    "preview": "vike build && vike preview"
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "vike": "^0.4.255",
-    "vike-vue": "^0.9.11",
-    "vue": "^3.5.30"
+    "nuxt": "^4.4.2",
+    "vue": "^3.5.30",
+    "vue-router": "^5.0.3"
   },
-  "devDependencies": {
-    "@vitejs/plugin-vue": "^6.0.5",
-    "typescript": "^5.9.3",
-    "vite": "^7.3.1"
-  },
-  "type": "module"
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }
