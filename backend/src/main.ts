@@ -8,9 +8,9 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-    // credentials: true, // NOTE: если нужны cookies
+    // credentials: true, // NOTE: if you need cookies
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3010);
 }
-bootstrap();
+bootstrap().catch(console.error); // fixed - eslint@typescript-eslint/no-floating-promises

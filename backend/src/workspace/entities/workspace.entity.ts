@@ -6,8 +6,8 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { User } from '../../user/entities/user.entity';
-// import { Property } from '../../property/entities/property.entity'; // пока не создан
+import { User } from 'src/user/entities/user.entity';
+import { Property } from 'src/property/entities/property.entity';
 
 @Entity('workspaces')
 export class Workspace {
@@ -32,6 +32,6 @@ export class Workspace {
   @OneToMany(() => User, (user) => user.workspace)
   users: User[];
 
-  // @OneToMany(() => Property, property => property.workspace)
-  // properties: Property[];
+  @OneToMany(() => Property, (property) => property.workspace, { eager: true })
+  properties: Property[];
 }

@@ -7,7 +7,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { Workspace } from '../../workspace/entities/workspace.entity';
+import { Workspace } from 'src/workspace/entities/workspace.entity';
 
 export enum UserRole {
   GUEST = 'guest',

@@ -1,6 +1,6 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { UserService } from '../user/user.service';
-import { UserRole } from '../user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
+import { UserRole } from 'src/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import {
   DEFAULT_ADMIN_EMAIL,

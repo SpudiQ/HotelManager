@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { SeedService } from './seed.service';
-import { UserModule } from '../user/user.module';
+import { UserModule } from 'src/user/user.module';
 import { ConfigModule } from '@nestjs/config';
 
 @Module({

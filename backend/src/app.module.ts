@@ -5,13 +5,12 @@ import { UserModule } from './user/user.module';
 import { WorkspaceModule } from './workspace/workspace.module';
 import { AuthModule } from './auth/auth.module';
 import { SeedModule } from './seed/seed.module';
+import { PropertyModule } from './property/property.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({
-      isGlobal: true,
-      envFilePath: '.env',
-    }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -23,13 +22,15 @@ import { SeedModule } from './seed/seed.module';
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_NAME'),
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        synchronize: true, // NOTE: только для разработки
+        synchronize: true,
         logging: true,
       }),
     }),
+    CommonModule,
+    AuthModule,
     UserModule,
     WorkspaceModule,
-    AuthModule,
+    PropertyModule,
     SeedModule,
   ],
   controllers: [],

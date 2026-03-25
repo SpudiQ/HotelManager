@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
-import { UserRole } from '../user/entities/user.entity';
+import { UserService } from 'src/user/user.service';
+import { UserRole } from 'src/user/entities/user.entity';
 
 export interface SanitizedUser {
   id: string;
