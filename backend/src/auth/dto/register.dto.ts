@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  MinLength,
-  IsEnum,
-} from 'class-validator';
-import { UserRole } from '../../user/entities/user.entity';
+import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -27,8 +20,4 @@ export class RegisterDto {
 
   @IsOptional()
   workspaceId?: string;
-
-  @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole;
 }

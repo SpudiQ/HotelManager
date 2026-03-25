@@ -27,7 +27,7 @@ export class AuthController {
       lastName: createUserDto.lastName,
       phone: createUserDto.phone,
       workspaceId: createUserDto.workspaceId,
-      role: createUserDto.role ?? UserRole.GUEST,
+      role: UserRole.GUEST,
     });
     const { passwordHash: _pw, ...result } = user;
     return result;
