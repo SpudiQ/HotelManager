@@ -8,8 +8,6 @@
 
 > 💡 **Цель проекта** — показать навыки разработки сложных full‑stack приложений, умение проектировать базы данных, создавать безопасные REST API и удобный интерфейс для управления.
 
----
-
 ### 📦 Возможности (реализовано на данный момент)
 
 #### Бэкенд (NestJS + PostgreSQL)
@@ -132,8 +130,6 @@ hotel-manager/
 The project demonstrates modern web development practices using **NestJS** for the backend and **Nuxt 3** for the frontend, with everything running inside **Docker Compose** for easy setup and testing.
 
 > 💡 **Goal**: To exhibit skills in building complex full‑stack applications, database design, secure REST APIs, and user‑friendly interfaces.
-
----
 
 ### ✨ Features (currently implemented)
 
