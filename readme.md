@@ -1,10 +1,8 @@
 # Hotel Manager — Система управления объектами размещения
 
-> **🇷🇺 Русская версия ниже / English version below**
-
 ---
 
-## 🇷🇺 Русская версия
+## 🇷🇺
 
 **Hotel Manager** — это демонстрационный проект, созданный для портфолио(в связи с реалиями текущего рынка труда). Он представляет собой полнофункциональную систему управления бронированием для отелей, баз отдыха, гостевых домов и других объектов размещения.
 
@@ -129,7 +127,7 @@ hotel-manager/
 - Telegram: [@unnamedqdq](https://t.me/unnamedqdq)
 - Почта: yura_anisimov@list.ru
 
-## 🇬🇧 English version
+## 🇬🇧
 
 **Hotel Manager** is a demonstration project for a portfolio. It showcases a fully functional booking management system for hotels, resorts, guest houses, and other accommodation facilities.
 
