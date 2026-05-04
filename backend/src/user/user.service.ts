@@ -43,6 +43,8 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
+  // NOTE: Можно использовать фильтр Блума, но все-таки не подразумевает HighLoad, поэтому усложнять и уменьшать точность не будет
+  // NOTE: We can use Bloom Filter, but there's no need to build a high-load app, so we won't sacrifice simplicity and precision :/
   private async findByField<K extends keyof User>(
     field: K,
     value: User[K],
