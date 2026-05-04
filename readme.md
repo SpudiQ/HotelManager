@@ -36,11 +36,17 @@
 - 🌱 **Seed базы данных**
   - При первом запуске автоматически создаётся суперадмин (данные из `.env`)
 
-#### Фронтенд (Nuxt 3)
+#### Фронтенд (Nuxt 4)
 
-- 🖥 **Адаптивный интерфейс** (в процессе разработки)
-- 🔑 Страницы входа и регистрации
-- 📋 Панель управления для работы с Workspace и Property (требует авторизации)
+- 🔑 **Страница входа** с редиректом по роли (сотрудники → `/admin`, гости → `/profile`)
+- 👤 **Профиль пользователя** — просмотр данных аккаунта, выход из системы
+- 🗓 **Виджет бронирования** на лендинге — выбор дат (DateRangePicker), счётчик гостей (взрослые / дети)
+- 🏢 **Панель администратора** (требует роль `manager` и выше):
+  - Боковая панель с навигацией и переключателем рабочих пространств
+  - Список Workspace в виде карточек (с количеством объектов)
+  - Страница детализации Workspace
+  - Заглушки: Аналитика, Настройки, Пользователи (только `superadmin`)
+- 🛡 **Защита маршрутов** — глобальный middleware на основе роли пользователя
 - ⚡️ Горячая перезагрузка (HMR) в Docker
 
 ---
@@ -50,7 +56,7 @@
 | Компонент          | Технологии                                                                |
 |--------------------|---------------------------------------------------------------------------|
 | **Бэкенд**         | NestJS, TypeORM, PostgreSQL, Passport (JWT), bcrypt, class-validator      |
-| **Фронтенд**       | Nuxt 3, Vue 3, Vite, TailwindCSS (план)                                   |
+| **Фронтенд**       | Nuxt 4, Vue 3, Vite, SCSS, HugeIcons, date-fns                            |
 | **Инфраструктура** | Docker, Docker Compose, Git (GitLab / GitHub)                             |
 | **Инструменты**    | ESLint, Prettier, TypeScript                                              |
 
@@ -159,11 +165,17 @@ The project demonstrates modern web development practices using **NestJS** for t
 - 🌱 **Database Seeding**
   - Creates a superadmin on first run (credentials from `.env`)
 
-#### Frontend (Nuxt 3)
+#### Frontend (Nuxt 4)
 
-- 🖥 **Responsive UI** (in progress)
-- 🔑 Login / Registration pages
-- 📋 Admin dashboard for Workspace and Property management (requires auth)
+- 🔑 **Login page** with role-based redirect (staff → `/admin`, guests → `/profile`)
+- 👤 **User profile** — view account info, logout
+- 🗓 **Booking widget** on the landing page — date range picker, guest counter (adults / children)
+- 🏢 **Admin dashboard** (requires `manager` role or higher):
+  - Sidebar with navigation and workspace switcher
+  - Workspace list with cards (property count per workspace)
+  - Workspace detail page
+  - Placeholders: Analytics, Settings, Users (superadmin only)
+- 🛡 **Route protection** — global middleware based on user role
 - ⚡️ Hot Module Replacement inside Docker
 
 ---
@@ -173,7 +185,7 @@ The project demonstrates modern web development practices using **NestJS** for t
 | Component          | Technologies                                                         |
 |--------------------|----------------------------------------------------------------------|
 | **Backend**        | NestJS, TypeORM, PostgreSQL, Passport (JWT), bcrypt, class-validator |
-| **Frontend**       | Nuxt 3, Vue 3, Vite                                                  |
+| **Frontend**       | Nuxt 4, Vue 3, Vite, SCSS, HugeIcons, date-fns                       |
 | **Infrastructure** | Docker, Docker Compose, Git (GitLab / GitHub)                        |
 | **Tooling**        | ESLint, Prettier, TypeScript                                         |
 
