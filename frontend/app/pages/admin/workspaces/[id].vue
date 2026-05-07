@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
+import { useSnackbarStore } from "~/stores/snackbar";
 import { useWorkspacesStore } from "~/stores/workspaces";
 
 definePageMeta({ layout: "admin" });
@@ -9,14 +10,19 @@ const route = useRoute();
 const wsId = computed(() => String(route.params.id));
 
 const workspacesStore = useWorkspacesStore();
+const snackbar = useSnackbarStore();
 const { current: workspace, isLoading } = storeToRefs(workspacesStore);
 
-onMounted(async () => {
-	try {
-		await workspacesStore.fetchOne(wsId.value);
-	} catch {
-		// NOTE: ошибка показана через snackbar-интерцептор
-	}
+const { error } = await useAsyncData(
+	`workspace-${wsId.value}`,
+	() => workspacesStore.fetchOne(wsId.value),
+	{ watch: [wsId] },
+);
+onMounted(() => {
+	if (error.value) snackbar.show("Не удалось загрузить workspace", "error");
+});
+watch(error, (e) => {
+	if (e) snackbar.show("Не удалось загрузить workspace", "error");
 });
 
 const breadcrumbs = useBreadcrumbsStore();
@@ -32,15 +38,12 @@ watchEffect(() => {
 	<section class="page">
 		<header
 			class="page__head"
-			v-skeleton="{ loading: isLoading, type: 'text', count: 2 }"
+			v-skeleton="{ loading: isLoading, type: 'text', count: 1 }"
 		>
 			<h1 class="page__title">{{ workspace?.name ?? wsId }}</h1>
-			<p class="page__sub">
-				Здесь будет список Properties выбранного workspace'а. Раздел в разработке.
-			</p>
 		</header>
 
-		<div class="placeholder">Properties (TBD)</div>
+		<PropertyTable :workspace-id="wsId" />
 	</section>
 </template>
 
@@ -60,19 +63,5 @@ watchEffect(() => {
 .page__title {
 	@include h1-bold;
 	color: $text;
-}
-
-.page__sub {
-	@include text-2;
-	color: $text-muted;
-}
-
-.placeholder {
-	@include text-2;
-	padding: 48px;
-	text-align: center;
-	color: $text-subtle;
-	background: $surface;
-	border: 1px dashed $border;
 }
 </style>

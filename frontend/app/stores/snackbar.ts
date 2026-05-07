@@ -6,29 +6,29 @@ interface SnackbarState {
 	message: string;
 	type: SnackbarType;
 	visible: boolean;
-	timer: ReturnType<typeof setTimeout> | null;
 }
+
+let timer: ReturnType<typeof setTimeout> | null = null;
 
 export const useSnackbarStore = defineStore("snackbar", {
 	state: (): SnackbarState => ({
 		message: "",
 		type: "error",
 		visible: false,
-		timer: null,
 	}),
 
 	actions: {
 		show(message: string, type: SnackbarType = "error") {
-			if (this.timer) clearTimeout(this.timer);
+			if (timer) clearTimeout(timer);
 			this.message = message;
 			this.type = type;
 			this.visible = true;
-			this.timer = setTimeout(() => {
+			timer = setTimeout(() => {
 				this.visible = false;
 			}, 4000);
 		},
 		hide() {
-			if (this.timer) clearTimeout(this.timer);
+			if (timer) clearTimeout(timer);
 			this.visible = false;
 		},
 	},

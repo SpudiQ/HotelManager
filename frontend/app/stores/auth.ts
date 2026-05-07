@@ -1,14 +1,10 @@
 import { defineStore } from "pinia";
 import { type LoginCredentials, type User, Role } from "~/modules/auth/types/auth";
 import { fetchMe, login as loginRequest, logout as logoutRequest } from "~/modules/auth/api/auth";
-import {
-	clearToken,
-	clearUser,
-	readToken,
-	readUser,
-	writeToken,
-	writeUser,
-} from "~/modules/auth/utils/storage";
+
+const AUTH_TOKEN_COOKIE = "hm_auth_token";
+const AUTH_USER_COOKIE = "hm_auth_user";
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 
 const isTokenExpired = (token: string): boolean => {
 	try {
@@ -21,71 +17,53 @@ const isTokenExpired = (token: string): boolean => {
 	}
 };
 
-interface AuthState {
-	user: User | null;
-	token: string | null;
-	isLoading: boolean;
-}
+export const useAuthStore = defineStore("auth", () => {
+	const token = useCookie<string | null>(AUTH_TOKEN_COOKIE, {
+		default: () => null,
+		sameSite: "lax",
+		maxAge: COOKIE_MAX_AGE,
+	});
+	const user = useCookie<User | null>(AUTH_USER_COOKIE, {
+		default: () => null,
+		sameSite: "lax",
+		maxAge: COOKIE_MAX_AGE,
+	});
+	const isLoading = ref(false);
 
-export const useAuthStore = defineStore("auth", {
-	state: (): AuthState => ({
-		user: null,
-		token: null,
-		isLoading: false,
-	}),
+	if (token.value && isTokenExpired(token.value)) {
+		token.value = null;
+		user.value = null;
+	}
 
-	getters: {
-		role: (state): Role => state.user?.role ?? Role.GUEST,
-		isAuthenticated: (state): boolean => !!state.user && !!state.token,
-	},
+	const role = computed<Role>(() => user.value?.role ?? Role.GUEST);
+	const isAuthenticated = computed(() => !!user.value && !!token.value);
 
-	actions: {
-		applySession(nextUser: User, nextToken: string) {
-			this.user = nextUser;
-			this.token = nextToken;
-			writeToken(nextToken);
-			writeUser(nextUser);
-		},
+	async function login(credentials: LoginCredentials): Promise<void> {
+		isLoading.value = true;
+		try {
+			const { access_token } = await loginRequest(credentials);
+			token.value = access_token;
+			user.value = await fetchMe();
+		} finally {
+			isLoading.value = false;
+		}
+	}
 
-		clearSession() {
-			this.user = null;
-			this.token = null;
-			clearToken();
-			clearUser();
-		},
+	async function logout(): Promise<void> {
+		isLoading.value = true;
+		try {
+			await logoutRequest();
+		} finally {
+			token.value = null;
+			user.value = null;
+			isLoading.value = false;
+		}
+	}
 
-		async login(credentials: LoginCredentials): Promise<void> {
-			this.isLoading = true;
-			try {
-				const { access_token } = await loginRequest(credentials);
-				this.token = access_token;
-				const me = await fetchMe();
-				this.applySession(me, access_token);
-			} finally {
-				this.isLoading = false;
-			}
-		},
+	function clearSession(): void {
+		token.value = null;
+		user.value = null;
+	}
 
-		async logout(): Promise<void> {
-			this.isLoading = true;
-			try {
-				await logoutRequest();
-			} finally {
-				this.clearSession();
-				this.isLoading = false;
-			}
-		},
-
-		async restore(): Promise<void> {
-			const storedToken = readToken();
-			const storedUser = readUser();
-			if (!storedToken || !storedUser) return;
-			if (isTokenExpired(storedToken)) {
-				this.clearSession();
-				return;
-			}
-			this.user = storedUser;
-			this.token = storedToken;
-		},
-	},
+	return { token, user, isLoading, role, isAuthenticated, login, logout, clearSession };
 });

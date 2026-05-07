@@ -2,8 +2,6 @@ import { useAuthStore } from "~/stores/auth";
 import { isStaff } from "~/modules/auth/utils/roles";
 
 export default defineNuxtRouteMiddleware((to) => {
-	if (import.meta.server) return;
-
 	const auth = useAuthStore();
 	const path = to.path;
 

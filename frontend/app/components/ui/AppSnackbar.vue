@@ -35,18 +35,18 @@ const { message, type, visible } = storeToRefs(snackbar);
 	align-items: center;
 	gap: 12px;
 	padding: 12px 16px;
-	background: $text;
-	color: $surface;
-	border: 1px solid transparent;
+	background: $surface;
+	color: $text;
+	border: 1px solid $border;
 	max-width: 400px;
 	@include soft-shadow;
 
 	&--error {
-		border-left: 3px solid #c0392b;
+		border-left: 3px solid $danger;
 	}
 
 	&--success {
-		border-left: 3px solid #27ae60;
+		border-left: 3px solid $success;
 	}
 }
 
@@ -62,13 +62,14 @@ const { message, type, visible } = storeToRefs(snackbar);
 	justify-content: center;
 	background: transparent;
 	border: 0;
-	color: $surface;
+	color: $text-muted;
 	cursor: pointer;
 	opacity: 0.7;
-	transition: opacity 0.12s ease;
+	transition: opacity 0.12s ease, color 0.12s ease;
 
 	&:hover {
 		opacity: 1;
+		color: $text;
 	}
 }
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
+import { useSnackbarStore } from "~/stores/snackbar";
 import { useWorkspacesStore } from "~/stores/workspaces";
 
 definePageMeta({ layout: "admin" });
@@ -8,8 +9,13 @@ definePageMeta({ layout: "admin" });
 useBreadcrumbsStore().set([{ label: "Workspaces" }]);
 
 const workspacesStore = useWorkspacesStore();
+const snackbar = useSnackbarStore();
 const { items: workspaces, isLoading } = storeToRefs(workspacesStore);
-onMounted(workspacesStore.fetchAll);
+
+const { error } = await useAsyncData("workspaces", () => workspacesStore.fetchAll());
+onMounted(() => {
+	if (error.value) snackbar.show("Не удалось загрузить workspaces", "error");
+});
 </script>
 
 <template>

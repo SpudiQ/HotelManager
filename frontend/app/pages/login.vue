@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useAuthStore } from "~/stores/auth";
+import { useSnackbarStore } from "~/stores/snackbar";
 import { isStaff } from "~/modules/auth/utils/roles";
 
 definePageMeta({ layout: "landing" });
 
 const auth = useAuthStore();
+const snackbar = useSnackbarStore();
 const { isLoading } = storeToRefs(auth);
 const router = useRouter();
 
@@ -18,7 +20,7 @@ async function submit() {
 		await auth.login({ email: email.value, password: password.value });
 		await router.push(isStaff(auth.role) ? "/admin" : "/profile");
 	} catch {
-		// NOTE: ошибка уже показана через snackbar-интерцептор
+		snackbar.show("Не удалось войти. Проверьте email и пароль", "error");
 	}
 }
 </script>
