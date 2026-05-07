@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import { Role } from "~/modules/auth/types/auth";
-import { useAuth } from "~/modules/auth/composables/useAuth";
-import { useBreadcrumbs } from "~/modules/admin/composables/useBreadcrumbs";
+import { useAuthStore } from "~/stores/auth";
+import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
 
 definePageMeta({ layout: "admin" });
 
-const { role } = useAuth();
-const { set } = useBreadcrumbs();
-set([{ label: "Пользователи" }]);
+useBreadcrumbsStore().set([{ label: "Пользователи" }]);
 
-if (role.value !== Role.SUPERADMIN) {
+if (useAuthStore().role !== Role.SUPERADMIN) {
 	await navigateTo("/admin");
 }
 </script>

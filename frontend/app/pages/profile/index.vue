@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { useAuth } from "~/modules/auth/composables/useAuth";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "~/stores/auth";
 import { isStaff } from "~/modules/auth/utils/roles";
 
-const { user, isAuthenticated, role, logout } = useAuth();
+const auth = useAuthStore();
+const { user, isAuthenticated, role } = storeToRefs(auth);
 const router = useRouter();
 
 const canEnterAdmin = computed(() => isStaff(role.value));
 
 async function handleLogout() {
-	await logout();
+	await auth.logout();
 	await router.push("/");
 }
 </script>

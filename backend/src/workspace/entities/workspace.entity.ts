@@ -32,6 +32,6 @@ export class Workspace {
   @OneToMany(() => User, (user) => user.workspace)
   users: User[];
 
-  @OneToMany(() => Property, (property) => property.workspace, { eager: true })
+  @OneToMany(() => Property, (property) => property.workspace)
   properties: Property[];
 }

@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { useBreadcrumbs } from "~/modules/admin/composables/useBreadcrumbs";
-import { useWorkspaces } from "~/modules/admin/composables/useWorkspaces";
+import { storeToRefs } from "pinia";
+import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
+import { useWorkspacesStore } from "~/stores/workspaces";
 
 definePageMeta({ layout: "admin" });
 
-const { set } = useBreadcrumbs();
-set([{ label: "Workspaces" }]);
+useBreadcrumbsStore().set([{ label: "Workspaces" }]);
 
-const { workspaces, isLoading, fetch } = useWorkspaces();
-onMounted(fetch);
+const workspacesStore = useWorkspacesStore();
+const { items: workspaces, isLoading } = storeToRefs(workspacesStore);
+onMounted(workspacesStore.fetchAll);
 </script>
 
 <template>
@@ -18,17 +19,12 @@ onMounted(fetch);
 			<p class="page__sub">Список ваших пространств. Откройте, чтобы перейти к объектам.</p>
 		</header>
 
-		<div class="grid">
-			<template v-if="isLoading">
-				<WorkspaceCardSkeleton v-for="n in 4" :key="n" />
-			</template>
-			<template v-else>
-				<WorkspaceCard
-					v-for="ws in workspaces"
-					:key="ws.id"
-					:workspace="ws"
-				/>
-			</template>
+		<div class="grid" v-skeleton="{ loading: isLoading, type: 'card', count: 1 }">
+			<WorkspaceCard
+				v-for="ws in workspaces"
+				:key="ws.id"
+				:workspace="ws"
+			/>
 		</div>
 	</section>
 </template>

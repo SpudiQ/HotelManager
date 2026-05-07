@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { HugeiconsIcon } from "@hugeicons/vue";
 import { Folder01Icon } from "@hugeicons/core-free-icons";
-import { useWorkspaces } from "../composables/useWorkspaces";
+import { storeToRefs } from "pinia";
+import { useWorkspacesStore } from "~/stores/workspaces";
 
-const { workspaces, fetch } = useWorkspaces();
-onMounted(fetch);
+const workspacesStore = useWorkspacesStore();
+const { items: workspaces } = storeToRefs(workspacesStore);
+onMounted(() => {
+	if (!workspaces.value.length) workspacesStore.fetchAll();
+});
 
 const open = ref(false);
 const wrapper = ref<HTMLElement | null>(null);

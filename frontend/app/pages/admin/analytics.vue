@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { useBreadcrumbs } from "~/modules/admin/composables/useBreadcrumbs";
+import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
 
 definePageMeta({ layout: "admin" });
 
-const { set } = useBreadcrumbs();
-set([{ label: "Аналитика" }]);
+useBreadcrumbsStore().set([{ label: "Аналитика" }]);
 </script>
 
 <template>

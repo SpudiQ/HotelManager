@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { HugeiconsIcon } from "@hugeicons/vue";
 import { DashboardSquare01Icon, Login03Icon, Logout03Icon, UserIcon } from "@hugeicons/core-free-icons";
-import { useAuth } from "../composables/useAuth";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "~/stores/auth";
 import { isStaff } from "../utils/roles";
 
-const { user, isAuthenticated, role, logout } = useAuth();
+const auth = useAuthStore();
+const { user, isAuthenticated, role } = storeToRefs(auth);
 const router = useRouter();
 
 const isAdminPage = router.currentRoute.value.fullPath.includes("admin");
@@ -29,7 +31,7 @@ const close = () => {
 
 const handleLogout = async () => {
 	close();
-	await logout();
+	await auth.logout();
 	await router.push("/");
 };
 

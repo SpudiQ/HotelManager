@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { Analytics01Icon, UserMultipleIcon, Settings01Icon } from "@hugeicons/core-free-icons";
+import { storeToRefs } from "pinia";
 import { Role } from "~/modules/auth/types/auth";
-import { useAuth } from "~/modules/auth/composables/useAuth";
+import { useAuthStore } from "~/stores/auth";
 
-const { role } = useAuth();
+const { role } = storeToRefs(useAuthStore());
 const route = useRoute();
 
 const isActive = (prefix: string) => route.path.startsWith(prefix);

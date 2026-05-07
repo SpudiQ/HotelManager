@@ -1,0 +1,96 @@
+@use "./_colors.scss" as *;
+
+@keyframes v-skel-shimmer {
+	0% { background-position: -200% center; }
+	100% { background-position: 200% center; }
+}
+
+@keyframes v-skel-fade-in {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+.v-skeleton-host {
+	position: relative;
+
+	> *:not(.v-skeleton-overlay) {
+		display: none !important;
+	}
+}
+
+.v-skeleton-fade-in {
+	animation: v-skel-fade-in 220ms ease-out both;
+}
+
+.v-skeleton-overlay {
+	display: contents;
+}
+
+.v-skel {
+	display: block;
+	background: linear-gradient(90deg, $bg 0%, $border 50%, $bg 100%);
+	background-size: 200% auto;
+	animation: v-skel-shimmer 1.8s linear infinite;
+}
+
+.v-skel--card {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+	padding: 20px;
+	background: $surface;
+	border: 1px solid $border;
+
+	.v-skel__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.v-skel__icon {
+		width: 40px;
+		height: 40px;
+	}
+
+	.v-skel__chev {
+		width: 18px;
+		height: 18px;
+	}
+
+	.v-skel__title {
+		height: 20px;
+		width: 55%;
+	}
+
+	.v-skel__foot {
+		margin-top: auto;
+		padding-top: 12px;
+		border-top: 1px solid $border;
+	}
+
+	.v-skel__meta {
+		height: 12px;
+		width: 40%;
+	}
+}
+
+.v-skel--row {
+	height: 48px;
+	width: 100%;
+	margin-bottom: 8px;
+}
+
+.v-skel--text {
+	height: 16px;
+	width: 60%;
+	margin-bottom: 8px;
+
+	&:nth-child(odd) { width: 75%; }
+	&:nth-child(even) { width: 50%; }
+}
+
+.v-skel--avatar {
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+}

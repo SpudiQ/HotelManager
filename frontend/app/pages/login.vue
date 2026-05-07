@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { useAuth } from "~/modules/auth/composables/useAuth";
+import { storeToRefs } from "pinia";
+import { useAuthStore } from "~/stores/auth";
 import { isStaff } from "~/modules/auth/utils/roles";
 
 definePageMeta({ layout: "landing" });
 
-const { login, isLoading, role } = useAuth();
+const auth = useAuthStore();
+const { isLoading } = storeToRefs(auth);
 const router = useRouter();
 
 const email = ref("");
@@ -13,8 +15,8 @@ const password = ref("");
 async function submit() {
 	if (isLoading.value) return;
 	try {
-		await login({ email: email.value, password: password.value });
-		await router.push(isStaff(role.value) ? "/admin" : "/profile");
+		await auth.login({ email: email.value, password: password.value });
+		await router.push(isStaff(auth.role) ? "/admin" : "/profile");
 	} catch {
 		// NOTE: ошибка уже показана через snackbar-интерцептор
 	}

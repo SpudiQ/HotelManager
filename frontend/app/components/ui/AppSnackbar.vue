@@ -1,22 +1,24 @@
 <script setup lang="ts">
 import { HugeiconsIcon } from "@hugeicons/vue";
 import { Cancel01Icon } from "@hugeicons/core-free-icons";
-import { useSnackbar } from "~/composables/useSnackbar";
+import { storeToRefs } from "pinia";
+import { useSnackbarStore } from "~/stores/snackbar";
 
-const { state, hide } = useSnackbar();
+const snackbar = useSnackbarStore();
+const { message, type, visible } = storeToRefs(snackbar);
 </script>
 
 <template>
 	<Transition name="snackbar">
 		<div
-			v-if="state.visible"
+			v-if="visible"
 			class="snackbar"
-			:class="`snackbar--${state.type}`"
+			:class="`snackbar--${type}`"
 			role="alert"
 			aria-live="assertive"
 		>
-			<span class="snackbar__msg">{{ state.message }}</span>
-			<button type="button" class="snackbar__close" aria-label="Закрыть" @click="hide">
+			<span class="snackbar__msg">{{ message }}</span>
+			<button type="button" class="snackbar__close" aria-label="Закрыть" @click="snackbar.hide">
 				<HugeiconsIcon :icon="Cancel01Icon" :size="16" :stroke-width="1.5" />
 			</button>
 		</div>

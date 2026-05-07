@@ -31,11 +31,18 @@ export class WorkspaceService {
   }
 
   async findAll(): Promise<Workspace[]> {
-    return this.workspaceRepository.find();
+    return this.workspaceRepository
+      .createQueryBuilder('w')
+      .loadRelationCountAndMap('w.propertyCount', 'w.properties')
+      .getMany();
   }
 
   async findOne(id: string): Promise<Workspace> {
-    const workspace = await this.workspaceRepository.findOne({ where: { id } });
+    const workspace = await this.workspaceRepository
+      .createQueryBuilder('w')
+      .loadRelationCountAndMap('w.propertyCount', 'w.properties')
+      .where('w.id = :id', { id })
+      .getOne();
     if (!workspace) {
       throw new NotFoundException(`Workspace with id ${id} not found`);
     }
@@ -43,9 +50,11 @@ export class WorkspaceService {
   }
 
   private async findBySlug(slug: string): Promise<Workspace> {
-    const workspace = await this.workspaceRepository.findOne({
-      where: { slug },
-    });
+    const workspace = await this.workspaceRepository
+      .createQueryBuilder('w')
+      .loadRelationCountAndMap('w.propertyCount', 'w.properties')
+      .where('w.slug = :slug', { slug })
+      .getOne();
     if (!workspace) {
       throw new NotFoundException(`Workspace with slug "${slug}" not found`);
     }
