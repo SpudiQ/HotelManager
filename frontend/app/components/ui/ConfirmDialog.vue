@@ -27,7 +27,7 @@ const emit = defineEmits<{
 }>();
 
 const inputValue = ref("");
-const inputEl = ref<HTMLInputElement | null>(null);
+const inputRef = ref<{ focus: () => void } | null>(null);
 
 const phraseRequired = computed(() => props.confirmPhrase.length > 0);
 const phraseMatches = computed(
@@ -68,7 +68,7 @@ watch(
 			inputValue.value = "";
 			document.addEventListener("keydown", onKeydown);
 			await nextTick();
-			inputEl.value?.focus();
+			inputRef.value?.focus();
 		} else {
 			document.removeEventListener("keydown", onKeydown);
 		}
@@ -78,6 +78,10 @@ watch(
 onBeforeUnmount(() => {
 	document.removeEventListener("keydown", onKeydown);
 });
+
+const confirmVariant = computed(() =>
+	props.variant === "danger" ? "danger" : "primary",
+);
 </script>
 
 <template>
@@ -95,35 +99,26 @@ onBeforeUnmount(() => {
 							<code class="dialog__code">{{ confirmPhrase }}</code>
 							для подтверждения
 						</label>
-						<input
-							ref="inputEl"
+						<AppInput
+							ref="inputRef"
 							v-model="inputValue"
-							class="dialog__input"
-							type="text"
-							autocomplete="off"
-							spellcheck="false"
 							:disabled="busy"
+							:spellcheck="false"
+							autocomplete="off"
 						/>
 					</div>
 
 					<div class="dialog__actions">
-						<button
-							type="button"
-							class="dialog__btn dialog__btn--ghost"
-							:disabled="busy"
-							@click="onCancel"
-						>
+						<AppButton variant="ghost" :disabled="busy" @click="onCancel">
 							{{ cancelLabel }}
-						</button>
-						<button
-							type="button"
-							class="dialog__btn"
-							:class="variant === 'danger' ? 'dialog__btn--danger' : 'dialog__btn--primary'"
+						</AppButton>
+						<AppButton
+							:variant="confirmVariant"
 							:disabled="confirmDisabled"
 							@click="onConfirm"
 						>
 							{{ confirmLabel }}
-						</button>
+						</AppButton>
 					</div>
 				</div>
 			</div>
@@ -192,74 +187,11 @@ onBeforeUnmount(() => {
 	border: 1px solid $border;
 }
 
-.dialog__input {
-	@include text-2;
-	width: 100%;
-	padding: 10px 12px;
-	background: $surface;
-	color: $text;
-	border: 1px solid $border;
-	transition: border-color 0.15s ease;
-
-	&:hover:not(:disabled) {
-		border-color: $border-hover;
-	}
-
-	&:focus-visible {
-		@include focus-ring;
-	}
-
-	&:disabled {
-		color: $text-subtle;
-		cursor: not-allowed;
-	}
-}
-
 .dialog__actions {
 	display: flex;
 	justify-content: flex-end;
 	gap: 8px;
 	margin-top: 8px;
-}
-
-.dialog__btn {
-	@include text-2-medium;
-	padding: 9px 16px;
-	border: 1px solid $border;
-	background: $surface;
-	color: $text;
-	cursor: pointer;
-	transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
-
-	&:hover:not(:disabled) {
-		border-color: $text;
-	}
-
-	&:focus-visible {
-		@include focus-ring;
-	}
-
-	&:disabled {
-		color: $text-subtle;
-		border-color: $border;
-		cursor: not-allowed;
-	}
-}
-
-.dialog__btn--ghost {
-	background: transparent;
-}
-
-.dialog__btn--primary:not(:disabled) {
-	background: $text;
-	color: $surface;
-	border-color: $text;
-}
-
-.dialog__btn--danger:not(:disabled) {
-	background: $text;
-	color: $surface;
-	border-color: $text;
 }
 
 .dialog-enter-active,

@@ -70,8 +70,8 @@ const onCreateClick = () => {
 	snackbar.show("Создание property в разработке", "success");
 };
 
-const onEditClick = (_p: Property) => {
-	snackbar.show("Редактирование в разработке", "success");
+const onEditClick = (p: Property) => {
+	navigateTo(`/admin/properties/${p.id}`);
 };
 
 const onDeleteClick = (p: Property) => {

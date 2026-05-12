@@ -1,9 +1,15 @@
 import { defineStore } from "pinia";
-import type { Property } from "~/modules/admin/types/property";
-import { deleteProperty, fetchProperties } from "~/modules/admin/api/properties";
+import type { Property, UpdatePropertyDto } from "~/modules/admin/types/property";
+import {
+	deleteProperty,
+	fetchProperties,
+	fetchProperty,
+	updateProperty,
+} from "~/modules/admin/api/properties";
 
 interface PropertiesState {
 	items: Property[];
+	current: Property | null;
 	currentWorkspaceId: string | null;
 	isLoading: boolean;
 }
@@ -11,6 +17,7 @@ interface PropertiesState {
 export const usePropertiesStore = defineStore("properties", {
 	state: (): PropertiesState => ({
 		items: [],
+		current: null,
 		currentWorkspaceId: null,
 		isLoading: false,
 	}),
@@ -26,9 +33,31 @@ export const usePropertiesStore = defineStore("properties", {
 			}
 		},
 
+		async fetchOne(id: string): Promise<void> {
+			const cached = this.items.find((p) => p.id === id);
+			if (cached) {
+				this.current = cached;
+				return;
+			}
+			this.isLoading = true;
+			try {
+				this.current = await fetchProperty(id);
+			} finally {
+				this.isLoading = false;
+			}
+		},
+
+		async update(id: string, dto: UpdatePropertyDto): Promise<void> {
+			const updated = await updateProperty(id, dto);
+			this.current = updated;
+			const idx = this.items.findIndex((p) => p.id === id);
+			if (idx !== -1) this.items[idx] = updated;
+		},
+
 		async remove(id: string): Promise<void> {
 			await deleteProperty(id);
 			this.items = this.items.filter((p) => p.id !== id);
+			if (this.current?.id === id) this.current = null;
 		},
 	},
 });
