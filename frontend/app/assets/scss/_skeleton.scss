@@ -10,6 +10,11 @@
 	to { opacity: 1; }
 }
 
+@keyframes v-skel-fade-out {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
 .v-skeleton-host {
 	position: relative;
 
@@ -18,8 +23,17 @@
 	}
 }
 
+.v-skeleton-host--leaving {
+	> .v-skeleton-overlay > .v-skel {
+		animation: v-skel-shimmer 1.8s linear infinite,
+			v-skel-fade-out 200ms ease-out both;
+	}
+}
+
 .v-skeleton-fade-in {
-	animation: v-skel-fade-in 220ms ease-out both;
+	> *:not(.v-skeleton-overlay) {
+		animation: v-skel-fade-in 220ms ease-out both;
+	}
 }
 
 .v-skeleton-overlay {

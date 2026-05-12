@@ -7,11 +7,12 @@ import { useWorkspacesStore } from "~/stores/workspaces";
 definePageMeta({ layout: "admin" });
 
 const route = useRoute();
+const router = useRouter();
 const wsId = computed(() => String(route.params.id));
 
 const workspacesStore = useWorkspacesStore();
 const snackbar = useSnackbarStore();
-const { current: workspace, isLoading } = storeToRefs(workspacesStore);
+const { current: workspace } = storeToRefs(workspacesStore);
 
 const { error } = await useAsyncData(
 	`workspace-${wsId.value}`,
@@ -27,6 +28,7 @@ watch(error, (e) => {
 
 const breadcrumbs = useBreadcrumbsStore();
 watchEffect(() => {
+	if (router.currentRoute.value.params.id !== wsId.value) return;
 	breadcrumbs.set([
 		{ label: "Workspaces", to: "/admin/workspaces" },
 		{ label: workspace.value?.name ?? wsId.value },
@@ -36,10 +38,7 @@ watchEffect(() => {
 
 <template>
 	<section class="page">
-		<header
-			class="page__head"
-			v-skeleton="{ loading: isLoading, type: 'text', count: 1 }"
-		>
+		<header class="page__head">
 			<h1 class="page__title">{{ workspace?.name ?? wsId }}</h1>
 		</header>
 

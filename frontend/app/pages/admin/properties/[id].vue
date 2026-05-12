@@ -16,6 +16,7 @@ import { useWorkspacesStore } from "~/stores/workspaces";
 definePageMeta({ layout: "admin" });
 
 const route = useRoute();
+const router = useRouter();
 const id = computed(() => String(route.params.id));
 
 const propertiesStore = usePropertiesStore();
@@ -55,6 +56,7 @@ const workspace = computed(() => {
 });
 
 watchEffect(() => {
+	if (router.currentRoute.value.params.id !== id.value) return;
 	const wsId = current.value?.workspaceId;
 	const wsCrumb = workspace.value?.name ?? wsId ?? "";
 	breadcrumbs.set([

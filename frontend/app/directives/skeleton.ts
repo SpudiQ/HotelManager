@@ -17,7 +17,8 @@ interface HostState {
 
 const STATE_KEY = "__vSkeletonState";
 const MIN_DURATION_MS = 300;
-const FADE_MS = 240;
+const FADE_OUT_MS = 200;
+const FADE_IN_MS = 240;
 
 const cardTemplate = () => `
 	<div class="v-skel v-skel--card">
@@ -64,18 +65,32 @@ const ensureState = (el: HTMLElement & { [STATE_KEY]?: HostState }): HostState =
 };
 
 const removeOverlay = (el: HTMLElement, state: HostState) => {
-	if (state.overlay && state.overlay.parentNode === el) {
-		el.removeChild(state.overlay);
-	}
+	if (state.fadeTimer) clearTimeout(state.fadeTimer);
+
+	const overlay = state.overlay;
 	state.overlay = null;
 	state.shownAt = null;
-	el.classList.remove("v-skeleton-host");
-	el.classList.add("v-skeleton-fade-in");
-	if (state.fadeTimer) clearTimeout(state.fadeTimer);
-	state.fadeTimer = setTimeout(() => {
-		el.classList.remove("v-skeleton-fade-in");
+
+	if (!overlay || overlay.parentNode !== el) {
+		el.classList.remove("v-skeleton-host");
+		el.classList.remove("v-skeleton-host--leaving");
 		state.fadeTimer = null;
-	}, FADE_MS);
+		return;
+	}
+
+	el.classList.add("v-skeleton-host--leaving");
+
+	state.fadeTimer = setTimeout(() => {
+		if (overlay.parentNode === el) el.removeChild(overlay);
+		el.classList.remove("v-skeleton-host");
+		el.classList.remove("v-skeleton-host--leaving");
+		el.classList.add("v-skeleton-fade-in");
+
+		state.fadeTimer = setTimeout(() => {
+			el.classList.remove("v-skeleton-fade-in");
+			state.fadeTimer = null;
+		}, FADE_IN_MS);
+	}, FADE_OUT_MS);
 };
 
 const showSkeleton = (
@@ -93,8 +108,9 @@ const showSkeleton = (
 		state.fadeTimer = null;
 	}
 	el.classList.remove("v-skeleton-fade-in");
+	el.classList.remove("v-skeleton-host--leaving");
 	el.classList.add("v-skeleton-host");
-	if (state.overlay) {
+	if (state.overlay && state.overlay.parentNode === el) {
 		el.removeChild(state.overlay);
 	}
 	state.overlay = buildOverlay(type, count);
