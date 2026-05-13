@@ -1,21 +1,62 @@
 <script setup lang="ts">
 import { HugeiconsIcon } from "@hugeicons/vue";
-import { Folder01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { Edit02Icon, Delete02Icon } from "@hugeicons/core-free-icons";
 import type { Workspace } from "../types/workspace";
+import { getWorkspaceIcon } from "../constants/workspace-icons";
 
 interface Props {
 	workspace: Workspace;
 }
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const emit = defineEmits<{
+	edit: [workspace: Workspace];
+	delete: [workspace: Workspace];
+}>();
+
+const onOpen = () => navigateTo(`/admin/workspaces/${props.workspace.id}`);
+const onKeydown = (event: KeyboardEvent) => {
+	if (event.key === "Enter" || event.key === " ") {
+		event.preventDefault();
+		onOpen();
+	}
+};
 </script>
 
 <template>
-	<NuxtLink :to="`/admin/workspaces/${workspace.id}`" class="card">
+	<article
+		class="card"
+		role="button"
+		tabindex="0"
+		@click="onOpen"
+		@keydown="onKeydown"
+	>
 		<div class="card__head">
 			<span class="card__icon">
-				<HugeiconsIcon :icon="Folder01Icon" :size="22" :stroke-width="1.5" />
+				<HugeiconsIcon
+					:icon="getWorkspaceIcon(workspace.settings?.icon)"
+					:size="22"
+					:stroke-width="1.5"
+				/>
 			</span>
-			<HugeiconsIcon :icon="ArrowRight01Icon" :size="18" :stroke-width="1.5" class="card__chev" />
+			<div class="card__actions">
+				<button
+					type="button"
+					class="card__action"
+					aria-label="Редактировать"
+					@click.stop="emit('edit', workspace)"
+				>
+					<HugeiconsIcon :icon="Edit02Icon" :size="16" :stroke-width="1.5" />
+				</button>
+				<button
+					type="button"
+					class="card__action"
+					aria-label="Удалить"
+					@click.stop="emit('delete', workspace)"
+				>
+					<HugeiconsIcon :icon="Delete02Icon" :size="16" :stroke-width="1.5" />
+				</button>
+			</div>
 		</div>
 
 		<div class="card__body">
@@ -25,7 +66,7 @@ defineProps<Props>();
 		<div class="card__foot">
 			<span class="card__meta">Объектов: {{ workspace.propertyCount }}</span>
 		</div>
-	</NuxtLink>
+	</article>
 </template>
 
 <style lang="scss" scoped>
@@ -37,14 +78,11 @@ defineProps<Props>();
 	background: $surface;
 	border: 1px solid $border;
 	color: $text;
+	cursor: pointer;
 	transition: border-color 0.15s ease, transform 0.05s ease;
 
 	&:hover {
 		border-color: $text;
-
-		.card__chev {
-			transform: translateX(2px);
-		}
 	}
 
 	&:active {
@@ -73,8 +111,43 @@ defineProps<Props>();
 	color: $text;
 }
 
-.card__chev {
-	transition: transform 0.15s ease;
+.card__actions {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+}
+
+.card__action {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	background: transparent;
+	color: $text-muted;
+	border: 0;
+	cursor: pointer;
+	opacity: 0;
+	transition:
+		opacity 0.12s ease,
+		background 0.12s ease,
+		color 0.12s ease;
+
+	.card:hover &,
+	.card:focus-within & {
+		opacity: 1;
+	}
+
+	&:hover {
+		background: $surface-alt;
+		color: $text;
+	}
+
+	&:focus-visible {
+		opacity: 1;
+		@include focus-ring;
+	}
 }
 
 .card__body {
@@ -86,17 +159,6 @@ defineProps<Props>();
 .card__title {
 	@include h3-bold;
 	color: $text;
-}
-
-.card__desc {
-	@include text-2;
-	color: $text-muted;
-}
-
-.card__foot {
-	margin-top: auto;
-	padding-top: 12px;
-	border-top: 1px solid $border;
 }
 
 .card__meta {

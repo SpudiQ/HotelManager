@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
-import { useSnackbarStore } from "~/stores/snackbar";
 import { useWorkspacesStore } from "~/stores/workspaces";
+import { useEntityPage } from "~/composables/useEntityPage";
 
 definePageMeta({ layout: "admin" });
 
@@ -11,20 +11,14 @@ const router = useRouter();
 const wsId = computed(() => String(route.params.id));
 
 const workspacesStore = useWorkspacesStore();
-const snackbar = useSnackbarStore();
 const { current: workspace } = storeToRefs(workspacesStore);
 
-const { error } = await useAsyncData(
+await useEntityPage(
 	`workspace-${wsId.value}`,
 	() => workspacesStore.fetchOne(wsId.value),
+	"Не удалось загрузить workspace",
 	{ watch: [wsId] },
 );
-onMounted(() => {
-	if (error.value) snackbar.show("Не удалось загрузить workspace", "error");
-});
-watch(error, (e) => {
-	if (e) snackbar.show("Не удалось загрузить workspace", "error");
-});
 
 const breadcrumbs = useBreadcrumbsStore();
 watchEffect(() => {
@@ -38,10 +32,7 @@ watchEffect(() => {
 
 <template>
 	<section class="page">
-		<header class="page__head">
-			<h1 class="page__title">{{ workspace?.name ?? wsId }}</h1>
-		</header>
-
+		<PageHeader :title="workspace?.name ?? wsId" />
 		<PropertyTable :workspace-id="wsId" />
 	</section>
 </template>
@@ -51,16 +42,5 @@ watchEffect(() => {
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
-}
-
-.page__head {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.page__title {
-	@include h1-bold;
-	color: $text;
 }
 </style>

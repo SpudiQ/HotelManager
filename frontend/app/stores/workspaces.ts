@@ -1,6 +1,16 @@
 import { defineStore } from "pinia";
-import type { Workspace } from "~/modules/admin/types/workspace";
-import { fetchWorkspace, fetchWorkspaces } from "~/modules/admin/api/workspaces";
+import type {
+	CreateWorkspaceDto,
+	UpdateWorkspaceDto,
+	Workspace,
+} from "~/modules/admin/types/workspace";
+import {
+	createWorkspace,
+	deleteWorkspace,
+	fetchWorkspace,
+	fetchWorkspaces,
+	updateWorkspace,
+} from "~/modules/admin/api/workspaces";
 
 interface WorkspacesState {
 	items: Workspace[];
@@ -37,6 +47,25 @@ export const useWorkspacesStore = defineStore("workspaces", {
 			} finally {
 				this.isLoading = false;
 			}
+		},
+
+		async create(dto: CreateWorkspaceDto): Promise<Workspace> {
+			const created = await createWorkspace(dto);
+			this.items = [...this.items, created];
+			return created;
+		},
+
+		async update(id: string, dto: UpdateWorkspaceDto): Promise<void> {
+			const updated = await updateWorkspace(id, dto);
+			this.current = updated;
+			const idx = this.items.findIndex((w) => w.id === id);
+			if (idx !== -1) this.items[idx] = updated;
+		},
+
+		async remove(id: string): Promise<void> {
+			await deleteWorkspace(id);
+			this.items = this.items.filter((w) => w.id !== id);
+			if (this.current?.id === id) this.current = null;
 		},
 	},
 });

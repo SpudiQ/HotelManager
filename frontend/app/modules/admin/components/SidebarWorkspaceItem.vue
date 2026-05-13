@@ -3,6 +3,7 @@ import { HugeiconsIcon } from "@hugeicons/vue";
 import { Folder01Icon } from "@hugeicons/core-free-icons";
 import { storeToRefs } from "pinia";
 import { useWorkspacesStore } from "~/stores/workspaces";
+import { getWorkspaceIcon } from "~/modules/admin/constants/workspace-icons";
 
 const workspacesStore = useWorkspacesStore();
 const { items: workspaces } = storeToRefs(workspacesStore);
@@ -56,7 +57,11 @@ onBeforeUnmount(() => document.removeEventListener("click", onDocClick));
 					class="child"
 					@click="close"
 				>
-					<span class="child__avatar">{{ workspace.name.charAt(0) }}</span>
+					<HugeiconsIcon
+						:icon="getWorkspaceIcon(workspace.settings?.icon)"
+						:size="16"
+						:stroke-width="1.5"
+					/>
 					<span class="child__tip">{{ workspace.name }}</span>
 				</NuxtLink>
 			</div>

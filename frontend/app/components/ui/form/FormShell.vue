@@ -86,8 +86,6 @@ const isDisabled = (a: FormAction): boolean =>
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
-	padding-bottom: 4px;
-	border-bottom: 1px solid $border;
 }
 
 :slotted(.form__section-title) {
