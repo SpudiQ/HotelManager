@@ -38,3 +38,14 @@ export type UpdatePropertyDto = Partial<{
 	settings: Record<string, unknown> | null;
 	isActive: boolean;
 }>;
+
+export interface CreatePropertyDto {
+	workspaceId: string;
+	name: string;
+	slug: string;
+	type: PropertyType;
+	address?: string | null;
+	description?: string | null;
+	contacts?: PropertyContacts | null;
+	isActive: boolean;
+}

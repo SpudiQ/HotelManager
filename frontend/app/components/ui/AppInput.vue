@@ -127,7 +127,7 @@ defineExpose({
 }
 
 .field__control--prefixed .field__input {
-	padding-left: 24px;
+	padding-left: 28px;
 }
 
 .field__input {

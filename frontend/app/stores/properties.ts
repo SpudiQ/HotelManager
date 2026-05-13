@@ -1,6 +1,11 @@
 import { defineStore } from "pinia";
-import type { Property, UpdatePropertyDto } from "~/modules/admin/types/property";
+import type {
+	CreatePropertyDto,
+	Property,
+	UpdatePropertyDto,
+} from "~/modules/admin/types/property";
 import {
+	createProperty,
 	deleteProperty,
 	fetchProperties,
 	fetchProperty,
@@ -45,6 +50,14 @@ export const usePropertiesStore = defineStore("properties", {
 			} finally {
 				this.isLoading = false;
 			}
+		},
+
+		async create(dto: CreatePropertyDto): Promise<Property> {
+			const created = await createProperty(dto);
+			if (this.currentWorkspaceId === dto.workspaceId) {
+				this.items = [...this.items, created];
+			}
+			return created;
 		},
 
 		async update(id: string, dto: UpdatePropertyDto): Promise<void> {

@@ -22,10 +22,10 @@ export default defineNuxtConfig({
 		},
 	},
 	components: [
-		{ path: "~/components", pathPrefix: false },
-		{ path: "~/modules/booking/components", pathPrefix: false },
-		{ path: "~/modules/auth/components", pathPrefix: false },
-		{ path: "~/modules/admin/components", pathPrefix: false },
+		{ path: "~/components", pathPrefix: false, extensions: ["vue"] },
+		{ path: "~/modules/booking/components", pathPrefix: false, extensions: ["vue"] },
+		{ path: "~/modules/auth/components", pathPrefix: false, extensions: ["vue"] },
+		{ path: "~/modules/admin/components", pathPrefix: false, extensions: ["vue"] },
 	],
 	// imports: { // выдает ошибку IPC connection closed
 	// 	dirs: ["modules/booking/composables"],

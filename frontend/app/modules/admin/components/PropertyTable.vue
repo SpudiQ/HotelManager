@@ -48,9 +48,11 @@ const COLS = "minmax(220px, 2fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(
 
 const sortedItems = computed<Property[]>(() => {
 	if (!sort.value) return items.value;
+	
 	const { key, dir } = sort.value;
 	const factor = dir === "asc" ? 1 : -1;
 	const list = [...items.value];
+
 	list.sort((a, b) => {
 		const av = (a as unknown as Record<string, unknown>)[key];
 		const bv = (b as unknown as Record<string, unknown>)[key];
@@ -61,13 +63,14 @@ const sortedItems = computed<Property[]>(() => {
 		const bs = bv == null ? "" : String(bv);
 		return as.localeCompare(bs, "ru") * factor;
 	});
+
 	return list;
 });
 
 const isEmpty = computed(() => !isLoading.value && items.value.length === 0);
 
 const onCreateClick = () => {
-	snackbar.show("Создание property в разработке", "success");
+	navigateTo(`/admin/workspaces/${props.workspaceId}/properties/create`);
 };
 
 const onEditClick = (p: Property) => {
