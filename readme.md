@@ -42,10 +42,18 @@
 - 👤 **Профиль пользователя** — просмотр данных аккаунта, выход из системы
 - 🗓 **Виджет бронирования** на лендинге — выбор дат (DateRangePicker), счётчик гостей (взрослые / дети)
 - 🏢 **Панель администратора** (требует роль `manager` и выше):
-  - Боковая панель с навигацией и переключателем рабочих пространств
-  - Список Workspace в виде карточек (с количеством объектов)
-  - Страница детализации Workspace
+  - Боковая панель с навигацией, контекстным меню и переключателем рабочих пространств
+  - Верхняя панель с хлебными крошками и профилем пользователя
+  - Workspace: список карточек (с количеством объектов), создание, детальная страница, редактирование, удаление с подтверждением фразой
+  - Property: создание из контекста рабочего пространства, редактирование, удаление, форма с типом, адресом, описанием (Markdown через TUI Editor), контактами и масками ввода
+  - Адаптивная таблица объектов с сортировкой и приоритетами колонок (`md`/`sm`)
   - Заглушки: Аналитика, Настройки, Пользователи (только `superadmin`)
+- 🍞 **Snackbar** — очередь уведомлений (до 3 видимых одновременно, автозакрытие)
+- 💀 **Скелетон-загрузка** — кастомная директива `v-skeleton` с типами `card / row / text / avatar`, плавным появлением и минимальной длительностью показа
+- 🍪 **Хранение сессии в cookies** — токен и пользователь читаются на SSR через `useCookie`, авто-проверка истечения JWT
+- 🧠 **Pinia-сторы** для auth, workspaces, properties, breadcrumbs, snackbar
+- 🧩 **Переиспользуемые UI-примитивы**: `AppButton`, `AppInput`, `AppSelect`, `AppSwitch`, `AppSnackbar`, `ConfirmDialog`, `PageHeader`, `MarkdownEditor`, `FormShell` (общий шаблон форм с `AppButton`-действиями и состоянием загрузки), `Table` (заголовок / строки / ячейки имени, статуса, действий)
+- 🪝 **Composables**: `useApi` ($fetch с базовым URL и токеном), `useEntityPage` (обёртка над `useAsyncData` с показом ошибок в Snackbar)
 - 🛡 **Защита маршрутов** — глобальный middleware на основе роли пользователя
 - ⚡️ Горячая перезагрузка (HMR) в Docker
 
@@ -56,7 +64,7 @@
 | Компонент          | Технологии                                                                |
 |--------------------|---------------------------------------------------------------------------|
 | **Бэкенд**         | NestJS, TypeORM, PostgreSQL, Passport (JWT), bcrypt, class-validator      |
-| **Фронтенд**       | Nuxt 4, Vue 3, Vite, SCSS, HugeIcons, date-fns                            |
+| **Фронтенд**       | Nuxt 4, Vue 3, Pinia, Vite, SCSS, HugeIcons, date-fns, Toast UI Editor, Maska |
 | **Инфраструктура** | Docker, Docker Compose, Git (GitLab / GitHub)                             |
 | **Инструменты**    | ESLint, Prettier, TypeScript                                              |
 
@@ -171,10 +179,18 @@ The project demonstrates modern web development practices using **NestJS** for t
 - 👤 **User profile** — view account info, logout
 - 🗓 **Booking widget** on the landing page — date range picker, guest counter (adults / children)
 - 🏢 **Admin dashboard** (requires `manager` role or higher):
-  - Sidebar with navigation and workspace switcher
-  - Workspace list with cards (property count per workspace)
-  - Workspace detail page
+  - Sidebar with navigation, context menu and workspace switcher
+  - Top bar with breadcrumbs and profile button
+  - Workspace: list of cards (with property count), creation, detail page, edit and delete with confirmation phrase
+  - Property: creation from a workspace context, edit, delete, form with type, address, description (Markdown via TUI Editor), contacts and input masks
+  - Adaptive property table with sortable headers and column priorities (`md`/`sm`)
   - Placeholders: Analytics, Settings, Users (superadmin only)
+- 🍞 **Snackbar** — notification queue (up to 3 visible at once, auto-dismiss)
+- 💀 **Skeleton loading** — custom `v-skeleton` directive with `card / row / text / avatar` variants, smooth fade and a minimum display duration
+- 🍪 **Session in cookies** — token and user are read on SSR via `useCookie`, with automatic JWT expiration checks
+- 🧠 **Pinia stores** for auth, workspaces, properties, breadcrumbs, snackbar
+- 🧩 **Reusable UI primitives**: `AppButton`, `AppInput`, `AppSelect`, `AppSwitch`, `AppSnackbar`, `ConfirmDialog`, `PageHeader`, `MarkdownEditor`, `FormShell` (shared form template with `AppButton` actions and loading state), `Table` (header / row / name, status, actions cells)
+- 🪝 **Composables**: `useApi` ($fetch with base URL and bearer token), `useEntityPage` (a `useAsyncData` wrapper that surfaces errors via Snackbar)
 - 🛡 **Route protection** — global middleware based on user role
 - ⚡️ Hot Module Replacement inside Docker
 
@@ -185,7 +201,7 @@ The project demonstrates modern web development practices using **NestJS** for t
 | Component          | Technologies                                                         |
 |--------------------|----------------------------------------------------------------------|
 | **Backend**        | NestJS, TypeORM, PostgreSQL, Passport (JWT), bcrypt, class-validator |
-| **Frontend**       | Nuxt 4, Vue 3, Vite, SCSS, HugeIcons, date-fns                       |
+| **Frontend**       | Nuxt 4, Vue 3, Pinia, Vite, SCSS, HugeIcons, date-fns, Toast UI Editor, Maska |
 | **Infrastructure** | Docker, Docker Compose, Git (GitLab / GitHub)                        |
 | **Tooling**        | ESLint, Prettier, TypeScript                                         |
 
