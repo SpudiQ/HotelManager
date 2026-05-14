@@ -60,7 +60,7 @@ watchEffect(() => {
 	const wsId = current.value?.workspaceId;
 	const wsCrumb = workspace.value?.name ?? wsId ?? "";
 	breadcrumbs.set([
-		{ label: "Workspaces", to: "/admin/workspaces" },
+		{ label: "Пространства", to: "/admin/workspaces" },
 		...(wsId
 			? [{ label: wsCrumb, to: `/admin/workspaces/${wsId}` }]
 			: []),

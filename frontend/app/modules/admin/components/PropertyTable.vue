@@ -38,13 +38,14 @@ watch(error, (e) => {
 
 const columns: TableColumn[] = [
 	{ key: "name", label: "Имя", sortable: true },
-	{ key: "type", label: "Тип", sortable: true },
-	{ key: "address", label: "Адрес", sortable: true },
+	{ key: "type", label: "Тип", sortable: true, priority: "md" },
+	{ key: "address", label: "Адрес", sortable: true, priority: "md" },
 	{ key: "isActive", label: "Статус", sortable: true },
 	{ key: "actions", label: "Действия" },
 ];
 
 const COLS = "minmax(220px, 2fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(120px, 0.8fr) 96px";
+const COLS_MD = "minmax(220px, 2fr) minmax(120px, 0.8fr) 96px";
 
 const sortedItems = computed<Property[]>(() => {
 	if (!sort.value) return items.value;
@@ -117,7 +118,7 @@ const onDialogConfirm = async () => {
 			</button>
 		</header>
 
-		<Table :cols="COLS" :loading="isLoading" :empty="isEmpty">
+		<Table :cols="COLS" :cols-md="COLS_MD" :loading="isLoading" :empty="isEmpty">
 			<template #header>
 				<TableHeader
 					:columns="columns"
@@ -127,10 +128,10 @@ const onDialogConfirm = async () => {
 			</template>
 
 			<TableRow v-for="p in sortedItems" :key="p.id">
-				<TableCellName :name="p.name" :description="p.slug" />
-				<div class="cell">{{ PROPERTY_TYPE_LABELS[p.type] ?? p.type }}</div>
-				<div class="cell cell--muted">{{ p.address || "—" }}</div>
-				<TableCellStatus :active="p.isActive" />
+				<TableCellName :name="p.name" :description="p.slug" data-card-label="Имя" />
+				<div class="cell" data-priority="md" data-card-label="Тип">{{ PROPERTY_TYPE_LABELS[p.type] ?? p.type }}</div>
+				<div class="cell cell--muted" data-priority="md" data-card-label="Адрес">{{ p.address || "—" }}</div>
+				<TableCellStatus :active="p.isActive" data-card-label="Статус" />
 				<TableActions>
 					<button
 						type="button"

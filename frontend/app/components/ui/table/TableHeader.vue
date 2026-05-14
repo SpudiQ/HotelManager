@@ -37,6 +37,7 @@ const onHeaderClick = (column: TableColumn) => {
 			v-for="column in columns"
 			:key="column.key"
 			class="cell"
+			:data-priority="column.priority"
 			:class="{ 'cell--sortable': column.sortable, 'cell--active': sort?.key === column.key }"
 			:role="column.sortable ? 'button' : undefined"
 			:tabindex="column.sortable ? 0 : undefined"
@@ -101,5 +102,21 @@ const onHeaderClick = (column: TableColumn) => {
 
 .arrow {
 	flex-shrink: 0;
+}
+
+@media (max-width: 1023px) {
+	.head {
+		grid-template-columns: var(--table-cols-md, var(--table-cols));
+	}
+
+	.cell[data-priority="md"] {
+		display: none;
+	}
+}
+
+@media (max-width: 639px) {
+	.head {
+		display: none;
+	}
 }
 </style>

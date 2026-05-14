@@ -11,7 +11,7 @@ import { useEntityPage } from "~/composables/useEntityPage";
 
 definePageMeta({ layout: "admin" });
 
-useBreadcrumbsStore().set([{ label: "Workspaces" }]);
+useBreadcrumbsStore().set([{ label: "Пространства" }]);
 
 const workspacesStore = useWorkspacesStore();
 const snackbar = useSnackbarStore();
@@ -20,7 +20,7 @@ const { items: workspaces, isLoading } = storeToRefs(workspacesStore);
 await useEntityPage(
 	"workspaces",
 	() => workspacesStore.fetchAll(),
-	"Не удалось загрузить workspaces",
+	"Не удалось загрузить пространства",
 );
 
 const dialogOpen = ref(false);
@@ -46,11 +46,11 @@ const onDialogConfirm = async () => {
 	dialogBusy.value = true;
 	try {
 		await workspacesStore.remove(target.value.id);
-		snackbar.show("Workspace удалён", "success");
+		snackbar.show("Пространство удалено", "success");
 		dialogOpen.value = false;
 		target.value = null;
 	} catch {
-		snackbar.show("Не удалось удалить workspace", "error");
+		snackbar.show("Не удалось удалить пространство", "error");
 	} finally {
 		dialogBusy.value = false;
 	}
@@ -62,7 +62,7 @@ const dialogPhrase = computed(() => target.value?.name ?? "");
 <template>
 	<section class="page">
 		<PageHeader
-			title="Workspaces"
+			title="Пространства"
 			subtitle="Список ваших пространств. Откройте, чтобы перейти к объектам."
 		>
 			<template #actions>
@@ -85,8 +85,8 @@ const dialogPhrase = computed(() => target.value?.name ?? "");
 
 		<ConfirmDialog
 			:open="dialogOpen"
-			title="Удалить workspace"
-			message="Это действие нельзя отменить. Workspace и связанные данные будут удалены."
+			title="Удалить пространство"
+			message="Это действие нельзя отменить. Пространство и связанные данные будут удалены."
 			:confirm-phrase="dialogPhrase"
 			confirm-label="Удалить"
 			cancel-label="Отмена"

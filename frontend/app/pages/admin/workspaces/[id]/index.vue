@@ -16,7 +16,7 @@ const { current: workspace } = storeToRefs(workspacesStore);
 await useEntityPage(
 	`workspace-${wsId.value}`,
 	() => workspacesStore.fetchOne(wsId.value),
-	"Не удалось загрузить workspace",
+	"Не удалось загрузить пространство",
 	{ watch: [wsId] },
 );
 
@@ -24,7 +24,7 @@ const breadcrumbs = useBreadcrumbsStore();
 watchEffect(() => {
 	if (router.currentRoute.value.params.id !== wsId.value) return;
 	breadcrumbs.set([
-		{ label: "Workspaces", to: "/admin/workspaces" },
+		{ label: "Пространства", to: "/admin/workspaces" },
 		{ label: workspace.value?.name ?? wsId.value },
 	]);
 });

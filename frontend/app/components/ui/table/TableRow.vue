@@ -23,4 +23,44 @@
 		background: $surface-alt;
 	}
 }
+
+@media (max-width: 1023px) {
+	.row {
+		grid-template-columns: var(--table-cols-md, var(--table-cols));
+	}
+
+	:deep([data-priority="md"]) {
+		display: none;
+	}
+}
+
+@media (max-width: 639px) {
+	.row {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 12px;
+		padding: 16px;
+		background: $surface;
+		border: 1px solid $border;
+
+		&:hover {
+			background: $surface;
+		}
+	}
+
+	:deep([data-priority="md"]) {
+		display: block;
+	}
+
+	:deep([data-card-label])::before {
+		content: attr(data-card-label);
+		display: block;
+		@include caption-medium;
+		color: $text-muted;
+		margin-bottom: 4px;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+	}
+}
 </style>

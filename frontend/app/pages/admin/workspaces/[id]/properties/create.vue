@@ -28,10 +28,10 @@ const { error } = await useAsyncData(
 	{ watch: [wsId] },
 );
 onMounted(() => {
-	if (error.value) snackbar.show("Не удалось загрузить workspace", "error");
+	if (error.value) snackbar.show("Не удалось загрузить пространство", "error");
 });
 watch(error, (e) => {
-	if (e) snackbar.show("Не удалось загрузить workspace", "error");
+	if (e) snackbar.show("Не удалось загрузить пространство", "error");
 });
 
 const workspace = computed(() => {
@@ -44,7 +44,7 @@ const workspace = computed(() => {
 watchEffect(() => {
 	if (router.currentRoute.value.params.id !== wsId.value) return;
 	breadcrumbs.set([
-		{ label: "Workspaces", to: "/admin/workspaces" },
+		{ label: "Пространства", to: "/admin/workspaces" },
 		{ label: workspace.value?.name ?? wsId.value, to: `/admin/workspaces/${wsId.value}` },
 		{ label: "Создание объекта" },
 	]);

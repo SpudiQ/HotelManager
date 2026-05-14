@@ -5,8 +5,11 @@ export interface SortState {
 	dir: SortDir;
 }
 
+export type ColPriority = "md";
+
 export interface TableColumn {
 	key: string;
 	label: string;
 	sortable?: boolean;
+	priority?: ColPriority;
 }

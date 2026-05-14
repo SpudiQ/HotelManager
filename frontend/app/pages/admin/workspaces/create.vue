@@ -13,8 +13,8 @@ import { useWorkspacesStore } from "~/stores/workspaces";
 definePageMeta({ layout: "admin" });
 
 useBreadcrumbsStore().set([
-	{ label: "Workspaces", to: "/admin/workspaces" },
-	{ label: "Создание workspace" },
+	{ label: "Пространства", to: "/admin/workspaces" },
+	{ label: "Создание пространства" },
 ]);
 
 const workspacesStore = useWorkspacesStore();
@@ -33,10 +33,10 @@ const onSubmit = async () => {
 	if (!canSave.value) return;
 	try {
 		await workspacesStore.create(buildPayload(form.value));
-		snackbar.show("Workspace создан", "success");
+		snackbar.show("Пространство создано", "success");
 		navigateTo("/admin/workspaces");
 	} catch {
-		snackbar.show("Не удалось создать workspace", "error");
+		snackbar.show("Не удалось создать пространство", "error");
 	}
 };
 
@@ -55,7 +55,7 @@ const actions = computed<FormAction[]>(() => [
 
 <template>
 	<section class="page">
-		<PageHeader title="Создание workspace" />
+		<PageHeader title="Создание пространства" />
 		<WorkspaceForm v-model="form" :actions="actions" />
 	</section>
 </template>

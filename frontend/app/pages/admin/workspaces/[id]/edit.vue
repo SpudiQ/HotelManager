@@ -27,14 +27,14 @@ const { current } = storeToRefs(workspacesStore);
 await useEntityPage(
 	`workspace-${id.value}`,
 	() => workspacesStore.fetchOne(id.value),
-	"Не удалось загрузить workspace",
+	"Не удалось загрузить пространство",
 	{ watch: [id] },
 );
 
 watchEffect(() => {
 	if (router.currentRoute.value.params.id !== id.value) return;
 	breadcrumbs.set([
-		{ label: "Workspaces", to: "/admin/workspaces" },
+		{ label: "Пространства", to: "/admin/workspaces" },
 		{
 			label: current.value?.name ?? id.value,
 			to: `/admin/workspaces/${id.value}`,
@@ -74,9 +74,9 @@ const onSubmit = async () => {
 			buildPayload(form.value, current.value.settings),
 		);
 		if (current.value) form.value = buildForm(current.value);
-		snackbar.show("Workspace сохранён", "success");
+		snackbar.show("Пространство сохранено", "success");
 	} catch {
-		snackbar.show("Не удалось сохранить workspace", "error");
+		snackbar.show("Не удалось сохранить пространство", "error");
 	}
 };
 
@@ -95,7 +95,7 @@ const actions = computed<FormAction[]>(() => [
 
 <template>
 	<section class="page">
-		<PageHeader :title="current?.name ?? 'Workspace'" />
+		<PageHeader :title="current?.name ?? 'Пространство'" />
 		<WorkspaceForm v-if="form" v-model="form" :actions="actions" />
 	</section>
 </template>

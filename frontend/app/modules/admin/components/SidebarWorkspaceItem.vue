@@ -45,7 +45,7 @@ onBeforeUnmount(() => document.removeEventListener("click", onDocClick));
 			@click="toggle"
 		>
 			<HugeiconsIcon :icon="Folder01Icon" :size="20" :stroke-width="1.5" />
-			<span class="tip">Workspaces</span>
+			<span class="tip">Пространства</span>
 		</button>
 
 		<Transition name="expand">

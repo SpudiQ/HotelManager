@@ -45,10 +45,10 @@ const model = computed<FormState>({
 				<header class="form__section-head">
 					<h2 class="form__section-title">Иконка</h2>
 					<p class="form__section-hint">
-						Используется на карточке и в боковой панели для быстрой идентификации workspace.
+						Используется на карточке и в боковой панели для быстрой идентификации пространства.
 					</p>
 				</header>
-				<div class="icon-grid" role="radiogroup" aria-label="Иконка workspace">
+				<div class="icon-grid" role="radiogroup" aria-label="Иконка пространства">
 					<button
 						v-for="opt in WORKSPACE_ICON_OPTIONS"
 						:key="opt.value"

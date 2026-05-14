@@ -1,18 +1,30 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 interface Props {
 	cols: string;
+	colsMd?: string;
+	colsSm?: string;
 	loading?: boolean;
 	empty?: boolean;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
+	colsMd: undefined,
+	colsSm: undefined,
 	loading: false,
 	empty: false,
 });
+
+const styles = computed(() => ({
+	"--table-cols": props.cols,
+	"--table-cols-md": props.colsMd ?? props.cols,
+	"--table-cols-sm": props.colsSm ?? props.cols,
+}));
 </script>
 
 <template>
-	<div class="table" :style="{ '--table-cols': cols }">
+	<div class="table" :style="styles">
 		<slot name="header" />
 
 		<div class="table__body">
@@ -42,5 +54,16 @@ withDefaults(defineProps<Props>(), {
 	background: linear-gradient(90deg, $bg 0%, $border 50%, $bg 100%);
 	background-size: 200% auto;
 	animation: v-skel-shimmer 1.8s linear infinite;
+}
+
+@media (max-width: 639px) {
+	.table {
+		background: transparent;
+		border: 0;
+	}
+
+	.table__body {
+		gap: 12px;
+	}
 }
 </style>
