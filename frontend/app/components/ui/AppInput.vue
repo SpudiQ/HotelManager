@@ -13,6 +13,8 @@ interface Props {
 	prefix?: string;
 	autocomplete?: string;
 	spellcheck?: boolean;
+	toggleable?: boolean;
+	enabled?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -26,10 +28,13 @@ const props = withDefaults(defineProps<Props>(), {
 	prefix: "",
 	autocomplete: "off",
 	spellcheck: true,
+	toggleable: false,
+	enabled: true,
 });
 
 const emit = defineEmits<{
 	"update:modelValue": [value: string];
+	"update:enabled": [value: boolean];
 }>();
 
 const inputId = useId();
@@ -41,6 +46,22 @@ const onInput = (event: Event) => {
 };
 
 const hasPrefix = computed(() => props.prefix.length > 0);
+const effectiveDisabled = computed(
+	() => props.disabled || (props.toggleable && !props.enabled),
+);
+
+const onToggle = () => {
+	if (props.disabled) return;
+	emit("update:enabled", !props.enabled);
+};
+
+const onToggleKeydown = (event: KeyboardEvent) => {
+	if (props.disabled) return;
+	if (event.key === " " || event.key === "Enter") {
+		event.preventDefault();
+		emit("update:enabled", !props.enabled);
+	}
+};
 
 defineExpose({
 	focus: () => inputEl.value?.focus(),
@@ -50,10 +71,40 @@ defineExpose({
 
 <template>
 	<div class="field">
-		<label v-if="label" :for="inputId" class="field__label">
+		<label
+			v-if="label && !toggleable"
+			:for="inputId"
+			class="field__label"
+		>
 			{{ label }}
 			<span v-if="required" class="field__required" aria-hidden="true">*</span>
 		</label>
+		<div
+			v-else-if="label && toggleable"
+			class="field__label field__label--toggleable"
+			:class="{ 'field__label--off': !enabled, 'field__label--disabled': disabled }"
+			role="switch"
+			tabindex="0"
+			:aria-checked="enabled"
+			:aria-disabled="disabled"
+			@click="onToggle"
+			@keydown="onToggleKeydown"
+		>
+			<span class="field__label-text">
+				{{ label }}
+				<span v-if="required" class="field__required" aria-hidden="true">*</span>
+			</span>
+			<span
+				class="field__mini-switch"
+				:class="{ 'field__mini-switch--on': enabled }"
+				aria-hidden="true"
+			>
+				<span
+					class="field__mini-switch-thumb"
+					:class="{ 'field__mini-switch-thumb--on': enabled }"
+				/>
+			</span>
+		</div>
 		<div class="field__control" :class="{ 'field__control--prefixed': hasPrefix }">
 			<span v-if="hasPrefix" class="field__prefix">{{ prefix }}</span>
 			<input
@@ -64,7 +115,7 @@ defineExpose({
 				:value="modelValue"
 				:type="type"
 				:placeholder="placeholder"
-				:disabled="disabled"
+				:disabled="effectiveDisabled"
 				:required="required"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
@@ -79,7 +130,7 @@ defineExpose({
 				:value="modelValue"
 				:type="type"
 				:placeholder="placeholder"
-				:disabled="disabled"
+				:disabled="effectiveDisabled"
 				:required="required"
 				:autocomplete="autocomplete"
 				:spellcheck="spellcheck"
@@ -103,6 +154,66 @@ defineExpose({
 .field__label {
 	@include text-2-medium;
 	color: $text;
+}
+
+.field__label--toggleable {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	user-select: none;
+	width: fit-content;
+	outline: none;
+
+	&:focus-visible {
+		@include focus-ring;
+	}
+}
+
+.field__label--off {
+	color: $text-muted;
+}
+
+.field__label--disabled {
+	cursor: not-allowed;
+	opacity: 0.6;
+}
+
+.field__label-text {
+	display: inline-flex;
+	align-items: center;
+}
+
+.field__mini-switch {
+	position: relative;
+	display: inline-block;
+	width: 26px;
+	height: 14px;
+	border-radius: 999px;
+	background: $border;
+	border: 1px solid $border-hover;
+	transition: background 0.15s ease, border-color 0.15s ease;
+	flex-shrink: 0;
+}
+
+.field__mini-switch--on {
+	background: $text;
+	border-color: $text;
+}
+
+.field__mini-switch-thumb {
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+	background: $surface;
+	transition: transform 0.18s ease;
+}
+
+.field__mini-switch-thumb--on {
+	transform: translateX(12px);
 }
 
 .field__required {
@@ -149,6 +260,7 @@ defineExpose({
 
 	&:disabled {
 		color: $text-subtle;
+		opacity: 0.6;
 		cursor: not-allowed;
 	}
 }
