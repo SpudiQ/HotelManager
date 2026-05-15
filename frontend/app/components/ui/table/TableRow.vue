@@ -1,7 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineProps<{ clickable?: boolean }>();
+</script>
 
 <template>
-	<div class="row">
+	<div class="row" :class="{ 'row--clickable': clickable }">
 		<slot />
 	</div>
 </template>
@@ -22,6 +24,10 @@
 	&:hover {
 		background: $surface-alt;
 	}
+}
+
+.row--clickable {
+	cursor: pointer;
 }
 
 @media (max-width: 1023px) {

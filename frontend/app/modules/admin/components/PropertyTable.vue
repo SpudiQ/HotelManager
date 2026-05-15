@@ -2,7 +2,12 @@
 import { storeToRefs } from "pinia";
 import { computed, ref, watch } from "vue";
 import { HugeiconsIcon } from "@hugeicons/vue";
-import { Edit02Icon, Delete02Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
+import {
+	Edit02Icon,
+	Delete02Icon,
+	PlusSignIcon,
+	BedSingle01Icon,
+} from "@hugeicons/core-free-icons";
 import type { Property } from "../types/property";
 import { PROPERTY_TYPE_LABELS } from "../constants/property-labels";
 import { usePropertiesStore } from "~/stores/properties";
@@ -44,8 +49,8 @@ const columns: TableColumn[] = [
 	{ key: "actions", label: "Действия" },
 ];
 
-const COLS = "minmax(220px, 2fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(120px, 0.8fr) 96px";
-const COLS_MD = "minmax(220px, 2fr) minmax(120px, 0.8fr) 96px";
+const COLS = "minmax(220px, 2fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(120px, 0.8fr) 132px";
+const COLS_MD = "minmax(220px, 2fr) minmax(120px, 0.8fr) 132px";
 
 const sortedItems = computed<Property[]>(() => {
 	if (!sort.value) return items.value;
@@ -76,6 +81,14 @@ const onCreateClick = () => {
 
 const onEditClick = (p: Property) => {
 	navigateTo(`/admin/properties/${p.id}`);
+};
+
+const onUnitsClick = (p: Property) => {
+	navigateTo(`/admin/properties/${p.id}/units`);
+};
+
+const onRowClick = (p: Property) => {
+	navigateTo(`/admin/properties/${p.id}/units`);
 };
 
 const onDeleteClick = (p: Property) => {
@@ -127,7 +140,12 @@ const onDialogConfirm = async () => {
 				/>
 			</template>
 
-			<TableRow v-for="p in sortedItems" :key="p.id">
+			<TableRow
+				v-for="p in sortedItems"
+				:key="p.id"
+				clickable
+				@click="onRowClick(p)"
+			>
 				<TableCellName :name="p.name" :description="p.slug" data-card-label="Имя" />
 				<div class="cell" data-priority="md" data-card-label="Тип">{{ PROPERTY_TYPE_LABELS[p.type] ?? p.type }}</div>
 				<div class="cell cell--muted" data-priority="md" data-card-label="Адрес">{{ p.address || "—" }}</div>
@@ -136,8 +154,16 @@ const onDialogConfirm = async () => {
 					<button
 						type="button"
 						class="iconbtn"
+						aria-label="Юниты"
+						@click.stop="onUnitsClick(p)"
+					>
+						<HugeiconsIcon :icon="BedSingle01Icon" :size="18" :stroke-width="1.5" />
+					</button>
+					<button
+						type="button"
+						class="iconbtn"
 						aria-label="Редактировать"
-						@click="onEditClick(p)"
+						@click.stop="onEditClick(p)"
 					>
 						<HugeiconsIcon :icon="Edit02Icon" :size="18" :stroke-width="1.5" />
 					</button>
@@ -145,7 +171,7 @@ const onDialogConfirm = async () => {
 						type="button"
 						class="iconbtn"
 						aria-label="Удалить"
-						@click="onDeleteClick(p)"
+						@click.stop="onDeleteClick(p)"
 					>
 						<HugeiconsIcon :icon="Delete02Icon" :size="18" :stroke-width="1.5" />
 					</button>

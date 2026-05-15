@@ -1,16 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, watchEffect } from "vue";
-import type { FormAction } from "~/components/ui/form/types";
-import {
-	buildPayload,
-	emptyForm,
-	isFormValid,
-	type FormState,
-} from "~/modules/admin/utils/unit-form";
+import { computed, watch, watchEffect } from "vue";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
 import { usePropertiesStore } from "~/stores/properties";
 import { useSnackbarStore } from "~/stores/snackbar";
-import { useUnitsStore } from "~/stores/units";
 import { useWorkspacesStore } from "~/stores/workspaces";
 
 definePageMeta({ layout: "admin" });
@@ -19,7 +11,6 @@ const route = useRoute();
 const router = useRouter();
 const propertyId = computed(() => String(route.params.id));
 
-const unitsStore = useUnitsStore();
 const propertiesStore = usePropertiesStore();
 const workspacesStore = useWorkspacesStore();
 const breadcrumbs = useBreadcrumbsStore();
@@ -73,54 +64,14 @@ watchEffect(() => {
 			label: property.value?.name ?? propertyId.value,
 			to: `/admin/properties/${propertyId.value}`,
 		},
-		{ label: "Юниты", to: `/admin/properties/${propertyId.value}/units` },
-		{ label: "Создание юнита" },
+		{ label: "Юниты" },
 	]);
 });
-
-const form = ref<FormState>(emptyForm());
-const canSave = computed(() => isFormValid(form.value));
-
-const onCancel = () => {
-	navigateTo(`/admin/properties/${propertyId.value}/units`);
-};
-const onReset = () => {
-	form.value = emptyForm();
-};
-const onSubmit = async () => {
-	if (!canSave.value) return;
-	try {
-		await unitsStore.create({
-			propertyId: propertyId.value,
-			...buildPayload(form.value),
-		});
-		snackbar.show("Юнит создан", "success");
-		navigateTo(`/admin/properties/${propertyId.value}/units`);
-	} catch {
-		snackbar.show("Не удалось создать юнит", "error");
-	}
-};
-
-const actions = computed<FormAction[]>(() => [
-	{ key: "cancel", label: "Отмена", onClick: onCancel },
-	{ key: "reset", label: "Сбросить", onClick: onReset },
-	{
-		key: "submit",
-		label: "Создать",
-		type: "submit",
-		disabled: !canSave.value,
-		onClick: onSubmit,
-	},
-]);
 </script>
 
 <template>
 	<section class="page">
-		<header class="page__head">
-			<h1 class="page__title">Создание юнита</h1>
-		</header>
-
-		<UnitForm v-model="form" :actions="actions" />
+		<UnitTable v-if="property" :property-id="property.id" />
 	</section>
 </template>
 
@@ -129,16 +80,5 @@ const actions = computed<FormAction[]>(() => [
 	display: flex;
 	flex-direction: column;
 	gap: 24px;
-}
-
-.page__head {
-	display: flex;
-	flex-direction: column;
-	gap: 6px;
-}
-
-.page__title {
-	@include h1-bold;
-	color: $text;
 }
 </style>

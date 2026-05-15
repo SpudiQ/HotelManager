@@ -7,7 +7,6 @@ import {
 	buildPayload,
 	type FormState,
 } from "~/modules/admin/utils/property-form";
-import { PROPERTY_TYPE_LABELS } from "~/modules/admin/constants/property-labels";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
 import { usePropertiesStore } from "~/stores/properties";
 import { useSnackbarStore } from "~/stores/snackbar";
@@ -24,7 +23,7 @@ const workspacesStore = useWorkspacesStore();
 const snackbar = useSnackbarStore();
 const breadcrumbs = useBreadcrumbsStore();
 
-const { current, isLoading } = storeToRefs(propertiesStore);
+const { current } = storeToRefs(propertiesStore);
 
 const { error } = await useAsyncData(
 	`property-${id.value}`,
@@ -138,8 +137,6 @@ const actions = computed<FormAction[]>(() => [
 		</header>
 
 		<PropertyForm v-if="form" v-model="form" :actions="actions" />
-
-		<UnitTable v-if="current" :property-id="current.id" />
 	</section>
 </template>
 

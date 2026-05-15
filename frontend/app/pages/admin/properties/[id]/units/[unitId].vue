@@ -83,6 +83,7 @@ watchEffect(() => {
 			label: property.value?.name ?? propertyId.value,
 			to: `/admin/properties/${propertyId.value}`,
 		},
+		{ label: "Юниты", to: `/admin/properties/${propertyId.value}/units` },
 		{ label: current.value?.name ?? unitId.value },
 	]);
 });
@@ -105,7 +106,9 @@ const onReset = () => {
 	if (current.value) form.value = buildForm(current.value);
 };
 
-const onCancel = () => navigateTo(`/admin/properties/${propertyId.value}`);
+const onCancel = () => {
+	navigateTo(`/admin/properties/${propertyId.value}/units`);
+};
 
 const onSubmit = async () => {
 	if (!form.value || !current.value) return;
