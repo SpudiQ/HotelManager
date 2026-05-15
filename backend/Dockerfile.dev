@@ -1,13 +1,18 @@
+# syntax=docker/dockerfile:1.7
 FROM node:20-alpine
+
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+RUN corepack enable && corepack prepare pnpm@10.33.2 --activate
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
-RUN npm install
+RUN --mount=type=cache,id=pnpm-backend,target=/root/.local/share/pnpm/store \
+    pnpm install --frozen-lockfile
 
 COPY . .
 
 EXPOSE 3010
 
-CMD ["npm", "run", "start:dev"]
+CMD ["pnpm", "run", "start:dev"]
