@@ -5,57 +5,40 @@ import type { FormAction } from "~/components/ui/form/types";
 import {
 	buildForm,
 	buildPayload,
-	isFormValid,
 	type FormState,
-} from "~/modules/admin/utils/unit-form";
+} from "~/modules/admin/utils/property-form";
 import { useBreadcrumbsStore } from "~/stores/breadcrumbs";
 import { usePropertiesStore } from "~/stores/properties";
 import { useSnackbarStore } from "~/stores/snackbar";
-import { useUnitsStore } from "~/stores/units";
 import { useWorkspacesStore } from "~/stores/workspaces";
 
 definePageMeta({ layout: "admin" });
 
 const route = useRoute();
 const router = useRouter();
-const propertyId = computed(() => String(route.params.id));
-const unitId = computed(() => String(route.params.unitId));
+const id = computed(() => String(route.params.id));
 
-const unitsStore = useUnitsStore();
 const propertiesStore = usePropertiesStore();
 const workspacesStore = useWorkspacesStore();
-const breadcrumbs = useBreadcrumbsStore();
 const snackbar = useSnackbarStore();
+const breadcrumbs = useBreadcrumbsStore();
 
-const { current } = storeToRefs(unitsStore);
+const { current } = storeToRefs(propertiesStore);
 
 const { error } = await useAsyncData(
-	`unit-${unitId.value}`,
-	() => unitsStore.fetchOne(unitId.value),
-	{ watch: [unitId] },
+	`property-${id.value}`,
+	() => propertiesStore.fetchOne(id.value),
+	{ watch: [id] },
 );
 onMounted(() => {
-	if (error.value) snackbar.show("Не удалось загрузить юнит", "error");
+	if (error.value) snackbar.show("Не удалось загрузить объект", "error");
 });
 watch(error, (e) => {
-	if (e) snackbar.show("Не удалось загрузить юнит", "error");
-});
-
-await useAsyncData(
-	`property-${propertyId.value}`,
-	() => propertiesStore.fetchOne(propertyId.value),
-	{ watch: [propertyId] },
-);
-
-const property = computed(() => {
-	return (
-		propertiesStore.items.find((p) => p.id === propertyId.value) ??
-		(propertiesStore.current?.id === propertyId.value ? propertiesStore.current : null)
-	);
+	if (e) snackbar.show("Не удалось загрузить объект", "error");
 });
 
 watch(
-	() => property.value?.workspaceId,
+	() => current.value?.workspaceId,
 	(wsId) => {
 		if (wsId) workspacesStore.fetchOne(wsId);
 	},
@@ -63,7 +46,7 @@ watch(
 );
 
 const workspace = computed(() => {
-	const wsId = property.value?.workspaceId;
+	const wsId = current.value?.workspaceId;
 	if (!wsId) return null;
 	return (
 		workspacesStore.items.find((w) => w.id === wsId) ??
@@ -72,18 +55,19 @@ const workspace = computed(() => {
 });
 
 watchEffect(() => {
-	if (router.currentRoute.value.params.unitId !== unitId.value) return;
-	const wsId = property.value?.workspaceId;
+	if (router.currentRoute.value.params.id !== id.value) return;
+	const wsId = current.value?.workspaceId;
+	const wsCrumb = workspace.value?.name ?? wsId ?? "";
 	breadcrumbs.set([
 		{ label: "Пространства", to: "/admin/workspaces" },
 		...(wsId
-			? [{ label: workspace.value?.name ?? wsId, to: `/admin/workspaces/${wsId}` }]
+			? [{ label: wsCrumb, to: `/admin/workspaces/${wsId}` }]
 			: []),
 		{
-			label: property.value?.name ?? propertyId.value,
-			to: `/admin/properties/${propertyId.value}`,
+			label: current.value?.name ?? id.value,
+			to: `/admin/properties/${id.value}`,
 		},
-		{ label: current.value?.name ?? unitId.value },
+		{ label: "Редактирование" },
 	]);
 });
 
@@ -92,38 +76,40 @@ const form = ref<FormState | null>(null);
 watch(
 	current,
 	(value) => {
-		if (value && value.id === unitId.value && form.value === null) {
+		if (value && form.value === null) {
 			form.value = buildForm(value);
 		}
 	},
 	{ immediate: true },
 );
 
-const canSave = computed(() => Boolean(form.value) && isFormValid(form.value!));
+const canSave = computed(() => Boolean(form.value));
 
 const onReset = () => {
 	if (current.value) form.value = buildForm(current.value);
 };
 
-const onCancel = () => {
-	navigateTo(`/admin/properties/${propertyId.value}`);
+const onCancel = () => navigateTo(`/admin/properties/${id.value}`);
+
+const onPreview = () => {
+	snackbar.show("Предпросмотр в разработке", "success");
 };
 
 const onSubmit = async () => {
 	if (!form.value || !current.value) return;
-	if (!isFormValid(form.value)) return;
 	try {
-		await unitsStore.update(current.value.id, buildPayload(form.value));
+		await propertiesStore.update(current.value.id, buildPayload(form.value));
 		if (current.value) form.value = buildForm(current.value);
-		snackbar.show("Юнит сохранён", "success");
+		snackbar.show("Объект сохранен", "success");
 	} catch {
-		snackbar.show("Не удалось сохранить юнит", "error");
+		snackbar.show("Не удалось сохранить объект", "error");
 	}
 };
 
 const actions = computed<FormAction[]>(() => [
 	{ key: "cancel", label: "Отмена", onClick: onCancel },
 	{ key: "reset", label: "Сбросить", onClick: onReset },
+	{ key: "preview", label: "Предпросмотр", onClick: onPreview },
 	{
 		key: "submit",
 		label: "Сохранить",
@@ -137,15 +123,20 @@ const actions = computed<FormAction[]>(() => [
 <template>
 	<section class="page">
 		<header class="page__head">
-			<h1
+			<!-- <h1
 				class="page__title"
-				v-skeleton="{ loading: !current, type: 'text', count: 1 }"
+				v-skeleton="{ loading: isLoading && !current, type: 'text', count: 1 }"
 			>
-				{{ current?.name ?? unitId }}
-			</h1>
+				{{ current?.name ?? id }}
+			</h1> -->
+			<!-- <div v-if="current" class="page__meta">
+				<span class="page__meta-item">{{ PROPERTY_TYPE_LABELS[current.type] ?? current.type }}</span>
+				<span class="page__meta-dot">•</span>
+				<span class="page__meta-item">{{ current.slug }}</span>
+			</div> -->
 		</header>
 
-		<UnitForm v-if="form" v-model="form" :actions="actions" />
+		<PropertyForm v-if="form" v-model="form" :actions="actions" />
 	</section>
 </template>
 
@@ -165,5 +156,17 @@ const actions = computed<FormAction[]>(() => [
 .page__title {
 	@include h1-bold;
 	color: $text;
+}
+
+.page__meta {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	@include text-2;
+	color: $text-muted;
+}
+
+.page__meta-dot {
+	color: $text-subtle;
 }
 </style>

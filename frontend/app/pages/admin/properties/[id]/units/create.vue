@@ -73,7 +73,6 @@ watchEffect(() => {
 			label: property.value?.name ?? propertyId.value,
 			to: `/admin/properties/${propertyId.value}`,
 		},
-		{ label: "Юниты", to: `/admin/properties/${propertyId.value}/units` },
 		{ label: "Создание юнита" },
 	]);
 });
@@ -82,7 +81,7 @@ const form = ref<FormState>(emptyForm());
 const canSave = computed(() => isFormValid(form.value));
 
 const onCancel = () => {
-	navigateTo(`/admin/properties/${propertyId.value}/units`);
+	navigateTo(`/admin/properties/${propertyId.value}`);
 };
 const onReset = () => {
 	form.value = emptyForm();
@@ -95,7 +94,7 @@ const onSubmit = async () => {
 			...buildPayload(form.value),
 		});
 		snackbar.show("Юнит создан", "success");
-		navigateTo(`/admin/properties/${propertyId.value}/units`);
+		navigateTo(`/admin/properties/${propertyId.value}`);
 	} catch {
 		snackbar.show("Не удалось создать юнит", "error");
 	}

@@ -80,15 +80,15 @@ const onCreateClick = () => {
 };
 
 const onEditClick = (p: Property) => {
-	navigateTo(`/admin/properties/${p.id}`);
+	navigateTo(`/admin/properties/${p.id}/edit`);
 };
 
 const onUnitsClick = (p: Property) => {
-	navigateTo(`/admin/properties/${p.id}/units`);
+	navigateTo(`/admin/properties/${p.id}`);
 };
 
 const onRowClick = (p: Property) => {
-	navigateTo(`/admin/properties/${p.id}/units`);
+	navigateTo(`/admin/properties/${p.id}`);
 };
 
 const onDeleteClick = (p: Property) => {
